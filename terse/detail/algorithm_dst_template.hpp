@@ -52,10 +52,12 @@ template<template<class...> class DstTempl, class SrcElem1, class SrcElem2>
         { return dst_concrete::merge<detail::DstContFromDstTemplSrcElem_t<DstTempl, SrcElem1>>(srcRng1, srcRng2); }
 template<template<class...> class DstTempl, class SrcRng1, class SrcRng2, class IsLessThan>
     auto merge(const SrcRng1& srcRng1, const SrcRng2& srcRng2, IsLessThan isLessThan)
-        { return dst_concrete::merge<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng1>>(srcRng1, srcRng2, isLessThan); }
+        { return dst_concrete::merge<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng1>>(srcRng1, srcRng2,
+                                                                                             isLessThan); }
 template<template<class...> class DstTempl, class SrcRng1, class SrcElem2, class IsLessThan>
     auto merge(const SrcRng1& srcRng1, const std::initializer_list<SrcElem2>& srcRng2, IsLessThan isLessThan)
-        { return dst_concrete::merge<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng1>>(srcRng1, srcRng2, isLessThan); }
+        { return dst_concrete::merge<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng1>>(srcRng1, srcRng2,
+                                                                                             isLessThan); }
 template<template<class...> class DstTempl, class SrcElem1, class SrcRng2, class IsLessThan>
     auto merge(const std::initializer_list<SrcElem1>& srcRng1, const SrcRng2& srcRng2, IsLessThan isLessThan)
         { return dst_concrete::merge<detail::DstContFromDstTemplSrcElem_t<DstTempl, SrcElem1>>
@@ -67,7 +69,7 @@ template<template<class...> class DstTempl, class SrcElem1, class SrcElem2, clas
             (srcRng1, srcRng2, isLessThan); }
 template<template<class...> class DstTempl, class SrcRng>
     auto move(SrcRng&& srcRng)
-        { return dst_concrete::move<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng>>(std::forward<SrcRng>(srcRng)); }
+        { return dst_concrete::move<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng>>(std::forward<SrcRng>(srcRng));}
 template<template<class...> class DstTempl1, template<class...> class DstTempl2, class SrcRng, class UnaryPred>
     auto partition_copy(const SrcRng& srcRng, UnaryPred unaryPred)
     {
@@ -93,10 +95,12 @@ template<template<class...> class DstTempl, class SrcRng, class UnaryPred>
         { return dst_concrete::remove_copy_if<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng>>(srcRng, unaryPred); }
 template<template<class...> class DstTempl, class SrcElem, class UnaryPred>
     auto remove_copy_if(const std::initializer_list<SrcElem>& srcRng, UnaryPred unaryPred)
-        { return dst_concrete::remove_copy_if<detail::DstContFromDstTemplSrcElem_t<DstTempl, SrcElem>>(srcRng, unaryPred); }
+        { return dst_concrete::remove_copy_if<detail::DstContFromDstTemplSrcElem_t<DstTempl, SrcElem>>(srcRng,
+                                                                                                       unaryPred); }
 template<template<class...> class DstTempl, class SrcRng, class Value>
     auto replace_copy(const SrcRng& srcRng, const Value& oldVal, const Value& newVal)
-        { return dst_concrete::replace_copy<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng>>(srcRng, oldVal, newVal); }
+        { return dst_concrete::replace_copy<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng>>(srcRng, oldVal,
+                                                                                                   newVal); }
 template<template<class...> class DstTempl, class SrcElem, class Value>
     auto replace_copy(const std::initializer_list<SrcElem>& srcRng, const Value& oldVal, const Value& newVal)
         { return dst_concrete::replace_copy<detail::DstContFromDstTemplSrcElem_t<DstTempl, SrcElem>>
@@ -126,10 +130,12 @@ template<template<class...> class DstTempl, class SrcRng1, class SrcElem2>
         { return dst_concrete::set_difference<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng1>>(srcRng1, srcRng2); }
 template<template<class...> class DstTempl, class SrcElem1, class SrcRng2>
     auto set_difference(const std::initializer_list<SrcElem1>& srcRng1, const SrcRng2& srcRng2)
-        { return dst_concrete::set_difference<detail::DstContFromDstTemplSrcElem_t<DstTempl, SrcElem1>>(srcRng1, srcRng2); }
+        { return dst_concrete::set_difference<detail::DstContFromDstTemplSrcElem_t<DstTempl, SrcElem1>>(srcRng1,
+                                                                                                        srcRng2); }
 template<template<class...> class DstTempl, class SrcElem1, class SrcElem2>
     auto set_difference(const std::initializer_list<SrcElem1>& srcRng1, const std::initializer_list<SrcElem2>& srcRng2)
-        { return dst_concrete::set_difference<detail::DstContFromDstTemplSrcElem_t<DstTempl, SrcElem1>>(srcRng1, srcRng2); }
+        { return dst_concrete::set_difference<detail::DstContFromDstTemplSrcElem_t<DstTempl, SrcElem1>>(srcRng1,
+                                                                                                        srcRng2); }
 template<template<class...> class DstTempl, class SrcRng1, class SrcRng2, class IsLessThan>
     auto set_difference(const SrcRng1& srcRng1, const SrcRng2& srcRng2, IsLessThan isLessThan)
         { return dst_concrete::set_difference<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng1>>
@@ -149,10 +155,12 @@ template<template<class...> class DstTempl, class SrcElem1, class SrcElem2, clas
             (srcRng1, srcRng2, isLessThan); }
 template<template<class...> class DstTempl, class SrcRng1, class SrcRng2>
     auto set_intersection(const SrcRng1& srcRng1, const SrcRng2& srcRng2)
-        { return dst_concrete::set_intersection<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng1>>(srcRng1, srcRng2); }
+        { return dst_concrete::set_intersection<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng1>>(srcRng1,
+                                                                                                        srcRng2); }
 template<template<class...> class DstTempl, class SrcRng1, class SrcElem2>
     auto set_intersection(const SrcRng1& srcRng1, const std::initializer_list<SrcElem2>& srcRng2)
-        { return dst_concrete::set_intersection<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng1>>(srcRng1, srcRng2); }
+        { return dst_concrete::set_intersection<detail::DstContFromDstTemplSrcRng_t<DstTempl, SrcRng1>>(srcRng1,
+                                                                                                        srcRng2); }
 template<template<class...> class DstTempl, class SrcElem1, class SrcRng2>
     auto set_intersection(const std::initializer_list<SrcElem1>& srcRng1, const SrcRng2& srcRng2)
         { return dst_concrete::set_intersection<detail::DstContFromDstTemplSrcElem_t<DstTempl, SrcElem1>>

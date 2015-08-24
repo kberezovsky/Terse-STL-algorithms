@@ -18,7 +18,7 @@ class Methods
 {
     template<class Cont, class = decltype(std::declval<Cont>().reserve(0))> static std::true_type testReserve(int);
     template<class Cont> static std::false_type testReserve(...);
-    template<class Cont> static void callReserve(Cont& cont, std::size_t capacity, std::true_type){ cont.reserve(capacity); }
+    template<class Cont> static void callReserve(Cont& cont, std::size_t capacity, std::true_type){cont.reserve(capacity);}
     template<class Cont> static void callReserve(Cont& cont, std::size_t capacity, std::false_type){}
     template<class Cont, class = decltype(std::declval<Cont>().size())> static std::true_type testSize(int);
     template<class Cont> static std::false_type testSize(...);

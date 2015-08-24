@@ -43,8 +43,10 @@ void testUsings()
     static_assert(is_same<DstContFromDefaultSrcRng_t<set<Elem>>, vector<Elem>>::value, "");
     static_assert(is_same<DstContFromDefaultSrcElem_t<Elem>, vector<Elem>>::value, "");
     static_assert(is_same<DstContFromDefaultNullaryOp_t<Elem(*)()>, vector<Elem>>::value, "");
-    static_assert(is_same<DstContFromDefaultUnaryOpSrcRng_t<DstElem(*)(SrcElem), set<SrcElem>>, vector<DstElem>>::value, "");
-    static_assert(is_same<DstContFromDefaultUnaryOpSrcElem_t<DstElem(*)(SrcElem), SrcElem>, vector<DstElem>>::value, "");
+    static_assert(is_same<DstContFromDefaultUnaryOpSrcRng_t<
+        DstElem(*)(SrcElem), set<SrcElem>>, vector<DstElem>>::value, "");
+    static_assert(is_same<DstContFromDefaultUnaryOpSrcElem_t<
+        DstElem(*)(SrcElem), SrcElem>, vector<DstElem>>::value, "");
     static_assert(is_same<DstContFromDefaultBinaryOpSrcRng1SrcRng2_t<
         DstElem(*)(SrcElem1, SrcElem2), set<SrcElem1>, deque<SrcElem2>>, vector<DstElem>>::value, "");
     static_assert(is_same<DstContFromDefaultBinaryOpSrcRng1SrcElem2_t<

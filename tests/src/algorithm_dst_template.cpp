@@ -18,8 +18,8 @@ TEST_CASE("algorithms, dst is based on the template template parameter")
 
     REQUIRE((DI{ 1, 2, 3 } == dst_template::copy                    <deque>(DI{ 1, 2, 3 })));
     REQUIRE((DI{ 1, 2, 3 } == dst_template::copy                    <deque>(  { 1, 2, 3 })));
-    REQUIRE((DI{ 1, 2, 3 } == dst_template::copy_if                 <deque>(DI{ 4, 1, 2, 3 }, [](int i){ return i < 4; })));
-    REQUIRE((DI{ 1, 2, 3 } == dst_template::copy_if                 <deque>(  { 4, 1, 2, 3 }, [](int i){ return i < 4; })));
+    REQUIRE((DI{ 1, 2, 3 } == dst_template::copy_if                 <deque>(DI{ 4, 1, 2, 3 }, [](int i){return i < 4;})));
+    REQUIRE((DI{ 1, 2, 3 } == dst_template::copy_if                 <deque>(  { 4, 1, 2, 3 }, [](int i){return i < 4;})));
     REQUIRE((DI{ 1, 2, 3 } == dst_template::copy_n                  <deque>(DI{ 1, 2, 3, 4 }, 3)));
     REQUIRE((DI{ 1, 2, 3 } == dst_template::copy_n                  <deque>(  { 1, 2, 3, 4 }, 3)));
     REQUIRE((DI{ 4, 4, 4 } == dst_template::fill_n                  <deque>(3, 4)));

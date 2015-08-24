@@ -279,7 +279,8 @@ template<class DstCont, class SrcElem1, class SrcRng2>
                 { std::set_intersection(std::begin(srcRng1), std::end(srcRng1),
                                        std::begin(srcRng2), std::end(srcRng2), ins); }); }
 template<class DstCont, class SrcElem1, class SrcElem2>
-    DstCont set_intersection(const std::initializer_list<SrcElem1>& srcRng1, const std::initializer_list<SrcElem2>& srcRng2)
+    DstCont set_intersection(const std::initializer_list<SrcElem1>& srcRng1,
+                             const std::initializer_list<SrcElem2>& srcRng2)
         { return detail::Alg<DstCont>::call(
             0,
             [&](auto ins)
@@ -293,14 +294,16 @@ template<class DstCont, class SrcRng1, class SrcRng2, class IsLessThan>
                 { std::set_intersection(std::begin(srcRng1), std::end(srcRng1),
                                        std::begin(srcRng2), std::end(srcRng2), ins, isLessThan); }); }
 template<class DstCont, class SrcRng1, class SrcElem2, class IsLessThan>
-    DstCont set_intersection(const SrcRng1& srcRng1, const std::initializer_list<SrcElem2>& srcRng2, IsLessThan isLessThan)
+    DstCont set_intersection(const SrcRng1& srcRng1, const std::initializer_list<SrcElem2>& srcRng2,
+                             IsLessThan isLessThan)
         { return detail::Alg<DstCont>::call(
             0,
             [&](auto ins)
                 { std::set_intersection(std::begin(srcRng1), std::end(srcRng1),
                                        std::begin(srcRng2), std::end(srcRng2), ins, isLessThan); }); }
 template<class DstCont, class SrcElem1, class SrcRng2, class IsLessThan>
-    DstCont set_intersection(const std::initializer_list<SrcElem1>& srcRng1, const SrcRng2& srcRng2, IsLessThan isLessThan)
+    DstCont set_intersection(const std::initializer_list<SrcElem1>& srcRng1, const SrcRng2& srcRng2,
+                             IsLessThan isLessThan)
         { return detail::Alg<DstCont>::call(
             0,
             [&](auto ins)
@@ -379,25 +382,25 @@ template<class DstCont, class SrcRng1, class SrcRng2>
         { return detail::Alg<DstCont>::call(
             std::max(detail::Methods::size(srcRng1), detail::Methods::size(srcRng2)),
             [&](auto ins)
-                { std::set_union(std::begin(srcRng1), std::end(srcRng1), std::begin(srcRng2), std::end(srcRng2), ins); }); }
+                {std::set_union(std::begin(srcRng1), std::end(srcRng1), std::begin(srcRng2), std::end(srcRng2), ins); });}
 template<class DstCont, class SrcRng1, class SrcElem2>
     DstCont set_union(const SrcRng1& srcRng1, const std::initializer_list<SrcElem2>& srcRng2)
         { return detail::Alg<DstCont>::call(
             std::max(detail::Methods::size(srcRng1), detail::Methods::size(srcRng2)),
             [&](auto ins)
-                { std::set_union(std::begin(srcRng1), std::end(srcRng1), std::begin(srcRng2), std::end(srcRng2), ins); }); }
+                {std::set_union(std::begin(srcRng1), std::end(srcRng1), std::begin(srcRng2), std::end(srcRng2), ins); });}
 template<class DstCont, class SrcElem1, class SrcRng2>
     DstCont set_union(const std::initializer_list<SrcElem1>& srcRng1, const SrcRng2& srcRng2)
         { return detail::Alg<DstCont>::call(
             std::max(detail::Methods::size(srcRng1), detail::Methods::size(srcRng2)),
             [&](auto ins)
-                { std::set_union(std::begin(srcRng1), std::end(srcRng1), std::begin(srcRng2), std::end(srcRng2), ins); }); }
+                {std::set_union(std::begin(srcRng1), std::end(srcRng1), std::begin(srcRng2), std::end(srcRng2), ins); });}
 template<class DstCont, class SrcElem1, class SrcElem2>
     DstCont set_union(const std::initializer_list<SrcElem1>& srcRng1, const std::initializer_list<SrcElem2>& srcRng2)
         { return detail::Alg<DstCont>::call(
             std::max(detail::Methods::size(srcRng1), detail::Methods::size(srcRng2)),
             [&](auto ins)
-                { std::set_union(std::begin(srcRng1), std::end(srcRng1), std::begin(srcRng2), std::end(srcRng2), ins); }); }
+                {std::set_union(std::begin(srcRng1), std::end(srcRng1), std::begin(srcRng2), std::end(srcRng2), ins); });}
 template<class DstCont, class SrcRng1, class SrcRng2, class IsLessThan>
     DstCont set_union(const SrcRng1& srcRng1, const SrcRng2& srcRng2, IsLessThan isLessThan)
         { return detail::Alg<DstCont>::call(

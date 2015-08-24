@@ -125,17 +125,19 @@ template<class SrcElem1, class SrcElem2>
         { return dst_concrete::set_difference<detail::DstContFromDefaultSrcElem_t<SrcElem1>>(srcRng1, srcRng2); }
 template<class SrcRng1, class SrcRng2, class IsLessThan>
     auto set_difference(const SrcRng1& srcRng1, const SrcRng2& srcRng2, IsLessThan isLessThan)
-        { return dst_concrete::set_difference<detail::DstContFromDefaultSrcRng_t<SrcRng1>>(srcRng1, srcRng2, isLessThan); }
+        { return dst_concrete::set_difference<detail::DstContFromDefaultSrcRng_t<SrcRng1>>(srcRng1, srcRng2, isLessThan);}
 template<class SrcRng1, class SrcElem2, class IsLessThan>
     auto set_difference(const SrcRng1& srcRng1, const std::initializer_list<SrcElem2>& srcRng2, IsLessThan isLessThan)
-        { return dst_concrete::set_difference<detail::DstContFromDefaultSrcRng_t<SrcRng1>>(srcRng1, srcRng2, isLessThan); }
+        { return dst_concrete::set_difference<detail::DstContFromDefaultSrcRng_t<SrcRng1>>(srcRng1, srcRng2, isLessThan);}
 template<class SrcElem1, class SrcRng2, class IsLessThan>
     auto set_difference(const std::initializer_list<SrcElem1>& srcRng1, const SrcRng2& srcRng2, IsLessThan isLessThan)
-        { return dst_concrete::set_difference<detail::DstContFromDefaultSrcElem_t<SrcElem1>>(srcRng1, srcRng2, isLessThan); }
+        { return dst_concrete::set_difference<detail::DstContFromDefaultSrcElem_t<SrcElem1>>(srcRng1, srcRng2,
+                                                                                             isLessThan); }
 template<class SrcElem1, class SrcElem2, class IsLessThan>
     auto set_difference(const std::initializer_list<SrcElem1>& srcRng1,
                         const std::initializer_list<SrcElem2>& srcRng2, IsLessThan isLessThan)
-        { return dst_concrete::set_difference<detail::DstContFromDefaultSrcElem_t<SrcElem1>>(srcRng1, srcRng2, isLessThan); }
+        { return dst_concrete::set_difference<detail::DstContFromDefaultSrcElem_t<SrcElem1>>(srcRng1, srcRng2,
+                                                                                             isLessThan); }
 template<class SrcRng1, class SrcRng2>
     auto set_intersection(const SrcRng1& srcRng1, const SrcRng2& srcRng2)
         { return dst_concrete::set_intersection<detail::DstContFromDefaultSrcRng_t<SrcRng1>>(srcRng1, srcRng2); }
@@ -150,10 +152,12 @@ template<class SrcElem1, class SrcElem2>
         { return dst_concrete::set_intersection<detail::DstContFromDefaultSrcElem_t<SrcElem1>>(srcRng1, srcRng2); }
 template<class SrcRng1, class SrcRng2, class IsLessThan>
     auto set_intersection(const SrcRng1& srcRng1, const SrcRng2& srcRng2, IsLessThan isLessThan)
-        { return dst_concrete::set_intersection<detail::DstContFromDefaultSrcRng_t<SrcRng1>>(srcRng1, srcRng2, isLessThan); }
+        { return dst_concrete::set_intersection<detail::DstContFromDefaultSrcRng_t<SrcRng1>>(srcRng1, srcRng2,
+                                                                                             isLessThan); }
 template<class SrcRng1, class SrcElem2, class IsLessThan>
     auto set_intersection(const SrcRng1& srcRng1, const std::initializer_list<SrcElem2>& srcRng2, IsLessThan isLessThan)
-        { return dst_concrete::set_intersection<detail::DstContFromDefaultSrcRng_t<SrcRng1>>(srcRng1, srcRng2, isLessThan); }
+        { return dst_concrete::set_intersection<detail::DstContFromDefaultSrcRng_t<SrcRng1>>(srcRng1, srcRng2,
+                                                                                             isLessThan); }
 template<class SrcElem1, class SrcRng2, class IsLessThan>
     auto set_intersection(const std::initializer_list<SrcElem1>& srcRng1, const SrcRng2& srcRng2, IsLessThan isLessThan)
         { return dst_concrete::set_intersection<detail::DstContFromDefaultSrcElem_t<SrcElem1>>
@@ -171,11 +175,11 @@ template<class SrcRng1, class SrcElem2>
         { return dst_concrete::set_symmetric_difference<detail::DstContFromDefaultSrcRng_t<SrcRng1>>(srcRng1, srcRng2); }
 template<class SrcElem1, class SrcRng2>
     auto set_symmetric_difference(const std::initializer_list<SrcElem1>& srcRng1, const SrcRng2& srcRng2)
-        { return dst_concrete::set_symmetric_difference<detail::DstContFromDefaultSrcElem_t<SrcElem1>>(srcRng1, srcRng2); }
+        { return dst_concrete::set_symmetric_difference<detail::DstContFromDefaultSrcElem_t<SrcElem1>>(srcRng1, srcRng2);}
 template<class SrcElem1, class SrcElem2>
     auto set_symmetric_difference(const std::initializer_list<SrcElem1>& srcRng1,
                                   const std::initializer_list<SrcElem2>& srcRng2)
-        { return dst_concrete::set_symmetric_difference<detail::DstContFromDefaultSrcElem_t<SrcElem1>>(srcRng1, srcRng2); }
+        { return dst_concrete::set_symmetric_difference<detail::DstContFromDefaultSrcElem_t<SrcElem1>>(srcRng1, srcRng2);}
 template<class SrcRng1, class SrcRng2, class IsLessThan>
     auto set_symmetric_difference(const SrcRng1& srcRng1, const SrcRng2& srcRng2, IsLessThan isLessThan)
         { return dst_concrete::set_symmetric_difference<detail::DstContFromDefaultSrcRng_t<SrcRng1>>
@@ -242,7 +246,8 @@ template<class SrcElem1, class SrcRng2, class BinaryOp>
 template<class SrcElem1, class SrcElem2, class BinaryOp>
     auto transform(const std::initializer_list<SrcElem1>& srcRng1,
                    const std::initializer_list<SrcElem2>& srcRng2, BinaryOp binaryOp)
-        { return dst_concrete::transform<detail::DstContFromDefaultBinaryOpSrcElem1SrcElem2_t<BinaryOp, SrcElem1, SrcElem2>>
+        { return dst_concrete::transform<detail::DstContFromDefaultBinaryOpSrcElem1SrcElem2_t<BinaryOp, SrcElem1,
+                                                                                              SrcElem2>>
             (srcRng1, srcRng2, binaryOp); }
 template<class SrcRng>
     auto unique_copy(const SrcRng& srcRng)
