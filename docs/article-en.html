@@ -86,7 +86,8 @@ Each part lives in the separate namespace:</p>
 <li><code>terse::dst_template</code></li>
 <li><code>terse::dst_default</code></li>
 </ul>
-<p>Each part has the versions of the generating algorithms from the standard headers <code>&lt;algorithm&gt;</code> and <code>&lt;numeric&gt;</code>.
+<p>Each part has the versions of the generating algorithms from the standard headers <code>&lt;algorithm&gt;</code> and
+<code>&lt;numeric&gt;</code>.
 The generating algorithm is any one that accepts <code>std::inserter</code>.</p>
 <p>The generating algorithms from <code>&lt;algorithm&gt;</code>:</p>
 <ul>
@@ -123,7 +124,8 @@ The generating algorithm is any one that accepts <code>std::inserter</code>.</p>
     auto f_5(const list&lt;int&gt;&amp; li){ return dst_concrete::transform&lt;vector&lt;string&gt;&gt;(li, [](int i){return to_string(i);}); }
 </pre>
 <p>The destination container type strictly matches with the specified one.
-If the destination container element type does not match with the lambda return type, then the available conversion will be applied.
+If the destination container element type does not match with the lambda return type, then the available conversion will be
+applied.
 In the following example the conversion from <code>double</code> to <code>int</code> has place:</p>
 <pre>
     assert(vector&lt;int&gt;{2} == dst_concrete::generate_n&lt;vector&lt;int&gt;&gt;(1, []{return 2.3;}));
@@ -135,7 +137,8 @@ In the following example the conversion from <code>double</code> to <code>int</c
     auto f_6(const list&lt;int&gt;&amp; li){ return dst_template::transform&lt;vector&gt;(li, [](int i){return to_string(i);}); }
 </pre>
 <p>Here the destination container element type matches with the lambda return type.
-Lambda returns <code>string</code>, in the combination with the specified template type <code>vector</code>, we get <code>vector&lt;string&gt;</code>:</p>
+Lambda returns <code>string</code>, in the combination with the specified template type <code>vector</code>, we get
+<code>vector&lt;string&gt;</code>:</p>
 <pre>
     assert((vector&lt;string&gt;{"1", "2"} == f_6({1, 2})));
 </pre>
@@ -168,8 +171,8 @@ Lambda returns <code>string</code>, in the combination with the specified templa
 Bjarne Stroustrup said that the default C++ container is <code>vector</code>, so we return <code>vector</code>.
 There is an exception for the characters though.
 C++ has an useful analog of <code>vector</code> for characters - <code>basic_string</code>.
-<abbr title="Small String Optimization">SSO</abbr>, <code>c_str</code>, <code>operator&lt;&lt;</code>, etc. are important reasons
-to use this analog in our library too.
+<abbr title="Small String Optimization">SSO</abbr>, <code>c_str</code>, <code>operator&lt;&lt;</code>, etc. are important
+reasons to use this analog in our library too.
 The type of destination container is deduced from the type of its element:</p>
 <pre>
     assert(string{{}} == dst_default::fill_n(1, char{}));
@@ -181,7 +184,8 @@ The type of destination container is deduced from the type of its element:</p>
 <p>Thus if the container element type is <code>char</code> then the container type will be <code>string</code> and so on.</p>
 
 <h4>Source entity</h4>
-<p>Our algorithms accept any source entity with the defined <code>begin</code> and <code>end</code>, including the initialization lists:</p>
+<p>Our algorithms accept any source entity with the defined <code>begin</code> and <code>end</code>, including the
+initialization lists:</p>
 <pre>
     struct A { int* begin(); int* end(); } a;
     int b[] = {1, 2};
@@ -190,7 +194,8 @@ The type of destination container is deduced from the type of its element:</p>
     vs = transform(b, i2s);
     vs = transform({1, 2}, i2s);
 </pre>
-<p>So, any standard container may be a data source, except <code>queue</code>, <code>priority_queue</code> and <code>stack</code>.</p>
+<p>So, any standard container may be a data source, except <code>queue</code>, <code>priority_queue</code> and
+<code>stack</code>.</p>
 <p>If we need to call the algorithm for sub-range then we can use <code>boost::make_iterator_range</code>:</p>
 <pre>
     vector&lt;int&gt; vi = {1, 2};
@@ -224,7 +229,8 @@ However we can use <code>array</code> too:</p>
 <pre>
     const auto a = terse:: ...
 </pre>
-<p>The performance of the <code>terse::</code> algorithms is not worse than the <code>std::</code> versions up to <code>std::move</code>.<br>
+<p>The performance of the <code>terse::</code> algorithms is not worse than the <code>std::</code> versions up to
+<code>std::move</code>.<br>
 Whenever available, we <code>reserve</code> the memory in the destination container before the filling.<br>
 The library is compilable by the modern versions of GCC and Clang.<br>
 The library uses the features of C++14 standard.<br>
