@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Terse STL algorithms</title>
+</head>
+<body>
+<header><h2>Terse STL algorithms</h2></header>
+<article>
+<h3>Motivation</h3>
+<p>4th September 2013 Sean Parent gave a speech
+"<a target="_blank" href="http://www.youtube.com/watch?v=qH6sSOr-yk8">C++ Seasoning</a>".
+One of the main thesises is "standard algorithms are more expressive than raw loops".
+Impressed with that speech, I changed my habits.
+Before:</p>
+<pre>
+    auto f_0(const list&lt;int&gt;& li)
+    {
+        vector&lt;string&gt; vs;
+        for(int i: li)
+            vs.push_back(to_string(i));
+        return vs;
+    }
+</pre>
+<p>After:</p>
+<pre>
+    auto f_1(const list&lt;int&gt;& li)
+    {
+        vector&lt;string&gt; vs;
+        std::transform(li.begin(), li.end(), back_inserter(vs), [](int i){return to_string(i);});
+        return vs;
+    }
+</pre>
+<p>It has fewer lines. 
+Soon I switched to the <code>boost/range</code> version:</p>
+<pre>
+    auto f_2(const list&lt;int&gt;& li)
+    {
+        vector&lt;string&gt; vs;
+        boost::transform(li, back_inserter(vs), [](int i){return to_string(i);});
+        return vs;
+    }
+</pre>
+<p>It has fewer algortihm arguments.</p>
+<p>Then I noticed that we have a gap between the container definition and the actual initialization. 
+It looks like ancient C:</p>
+<pre>
+    int i;
+    i = atoi("5");
+</pre>
+<p>The modern version is shorter and prevents the use of the uninitialized variable:</p>
+<pre>
+    int i = atoi("5");
+</pre>
+<p>It would be nice to combine the creation and the filling of the containers too.
+The ideal code would be similar to the following version:</p>
+<pre>
+    auto f_3(const list&lt;int&gt;& li)
+    {
+        return transform(li, [](int i){return to_string(i);});
+    }
+</pre>
+<p>It is even better to write it in the single line:</p>
+<pre>
+    auto f_4(const list&lt;int&gt;& li){ return transform(li, [](int i){return to_string(i);}); }
+</pre>
+<p>Here the "syntactic noise" is at the available minimum.</p>
+<p>This one line version may be painlessly moved to the header. The interface will not be scattered.
+It will be easier to read the code because of the eliminated gap between the declaration and definition.
+The function is good for inlining.</p>
+<p>I hadn't found the existing solution for <code>f_4</code>, so I made the library by myself.</p>
+
+<h3>Library</h3>
+<h4>Content</h4>
+<p>In <code>f_4</code> the algorithm has no information about the destination container type. 
+Depending on the circumstances, three ways are appropriate for the type specification:</p>
+<ul>
+<li>specify the concrete type</li>
+<li>specify the template type</li>
+<li>use the default type</li>
+</ul>
+<p>Based on these ways, the library has three parts. 
+Each part lives in the separate namespace:</p>
+<ul>
+<li><code>terse::dst_concrete</code></li>
+<li><code>terse::dst_template</code></li>
+<li><code>terse::dst_default</code></li>
+</ul>
+<p>Each part has the versions of the generating algorithms from the standard headers <code>&lt;algorithm&gt;</code> and <code>&lt;numeric&gt;</code>.
+The generating algorithm is any one that accepts <code>std::inserter</code>.</p>
+<p>The generating algorithms from <code>&lt;algorithm&gt;</code>:</p>
+<ul>
+<li><code>copy</code></li>
+<li><code>copy_if</code></li>
+<li><code>copy_n</code></li>
+<li><code>fill_n</code></li>
+<li><code>generate_n</code></li>
+<li><code>merge</code></li>
+<li><code>move</code></li>
+<li><code>partition_copy</code></li>
+<li><code>remove_copy</code></li>
+<li><code>remove_copy_if</code></li>
+<li><code>replace_copy</code></li>
+<li><code>replace_copy_if</code></li>
+<li><code>reverse_copy</code></li>
+<li><code>rotate_copy</code></li>
+<li><code>set_difference</code></li>
+<li><code>set_intersection</code></li>
+<li><code>set_symmetric_difference</code></li>
+<li><code>set_union</code></li>
+<li><code>transform</code></li>
+<li><code>unique_copy</code></li>
+</ul>
+<p>The generating algorithms from <code>&lt;numeric&gt;</code>:</p>
+<ul>
+<li><code>adjacent_difference</code></li>
+<li><code>partial_sum</code></li>
+</ul>
+
+<h4>The concrete type</h4>
+<p>The example of the function with the specification of the concrete type:</p>
+<pre>
+    auto f_5(const list&lt;int&gt;& li){ return dst_concrete::transform&lt;vector&lt;string&gt;&gt;(li, [](int i){return to_string(i);}); }
+</pre>
+<p>The destination container type strictly matches with the specified one. 
+If the destination container element type does not match with the lambda return type, then the available conversion will be applied.
+In the following example the conversion from <code>double</code> to <code>int</code> has place:</p>
+<pre>
+    assert(vector&lt;int&gt;{2} == dst_concrete::generate_n&lt;vector&lt;int&gt;&gt;(1, []{return 2.3;}));
+</pre>
+
+<h4>The template type</h4>
+<p>The example of the function with the specification of the template type:</p>
+<pre>
+    auto f_6(const list&lt;int&gt;& li){ return dst_template::transform&lt;vector&gt;(li, [](int i){return to_string(i);}); }
+</pre>
+<p>Here the destination container element type matches with the lambda return type.
+Lambda returns <code>string</code>, in the combination with the specified template type <code>vector</code>, we get <code>vector&lt;string&gt;</code>:</p>
+<pre>
+    assert((vector&lt;string&gt;{"1", "2"} == f_6({1, 2})));
+</pre>
+<p>For the associative types lambda must return a <code>pair</code>:</p>
+<pre>
+    assert((map&lt;int, double&gt;{{1, 2.3}} == dst_template::generate_n&lt;map&gt;(1, []{return make_pair(1, 2.3);})));
+</pre>
+<p>Currently, the library supports the following associative containers:</p>
+<ul>
+<li><code>std::map</code></li>
+<li><code>std::multimap</code></li>
+<li><code>std::unordered_map</code></li>
+<li><code>std::unordered_multimap</code></li>
+<li><code>boost::container::map</code></li>
+<li><code>boost::container::multimap</code></li>
+<li><code>boost::container::flat_map</code></li>
+<li><code>boost::container::flat_multimap</code></li>
+<li><code>boost::unordered::unordered_map</code></li>
+<li><code>boost::unordered::unordered_multimap</code></li>
+<li><code>google::dense_hash_map</code></li>
+<li><code>google::sparse_hash_map</code></li>
+</ul>
+
+<h4>The default type</h4>
+<p>The example of the function using the default type:</p>
+<pre>
+    auto f_7(const list&lt;int&gt;& li){ return dst_default::transform(li, [](int i){return to_string(i);}); }
+</pre>
+<p>What does this function return? 
+Bjarne Stroustrup said that the default C++ container is <code>vector</code>, so we return <code>vector</code>.
+There is an exception for the characters though.
+C++ has an useful analog of <code>vector</code> for characters - <code>basic_string</code>.
+<abbr title="Small String Optimization">SSO</abbr>, <code>c_str</code>, <code>operator&lt;&lt;</code>, etc. are important reasons 
+to use this analog in our library too.
+The type of destination container is deduced from the type of its element:</p>
+<pre>
+    assert(string{{}} == dst_default::fill_n(1, char{}));
+    assert(wstring{{}} == dst_default::fill_n(1, wchar_t{}));
+    assert(u16string{{}} == dst_default::fill_n(1, char16_t{}));
+    assert(u32string{{}} == dst_default::fill_n(1, char32_t{}));
+    assert(vector&lt;ANY_OTHER_TYPE&gt; == dst_default::fill_n(1, ANY_OTHER_TYPE{}));
+</pre>
+<p>Thus if the container element type is <code>char</code> then the container type will be <code>string</code> and so on.</p>
+
+<h4>Source entity</h4>
+<p>Our algorithms accept any source entity with the defined <code>begin</code> and <code>end</code>, including the initialization lists:</p>
+<pre>
+    struct A { int* begin(); int* end(); } a;
+    int b[] = {1, 2};
+    auto i2s = [](int i){return to_string(i);};
+    auto vs = transform(a, i2s);
+    vs = transform(b, i2s);
+    vs = transform({1, 2}, i2s);
+</pre>
+<p>So, any standard container may be a data source, except <code>queue</code>, <code>priority_queue</code> and <code>stack</code>.</p>
+<p>If we need to call the algorithm for sub-range then we can use <code>boost::make_iterator_range</code>:</p>
+<pre>
+    vector&lt;int&gt; vi = {1, 2};
+    vs = transform(boost::make_iterator_range(vi.begin()+1, vi.end()), i2s);
+</pre>
+
+<h4>Destination entity</h4>
+<p>Algorithms may write to any class similar to the one from the following example:</p>
+<pre>
+    template&lt;class T&gt;
+    struct A
+    {
+        using value_type = ...
+        using iterator = ...
+        using const_iterator = ...
+        iterator insert(const_iterator, value_type&amp;&amp;);
+        const_iterator end() const;
+    };
+
+    auto a = transform&lt;A&gt;({1, 2}, [](int i){return to_string(i);});
+</pre>
+<p>All standard containers are similar to this example, except <code>array</code>. 
+However we can use <code>array</code> too:</p>
+<pre>
+    auto ai = dst_concrete::transform&lt;array&lt;int, 2&gt;&gt;({"1", "2"}, atoi);
+</pre>
+<p>We do not check for the overflow.</p>
+
+<h3>Final notes</h3>
+<p>The useful side effect of using the library algorithms is the possibility to specify container immutability:</p>
+<pre>
+    const auto a = terse:: ...
+</pre>
+<p>The performance of the <code>terse::</code> algorithms is not worse than the <code>std::</code> versions up to <code>std::move</code>.<br>
+Whenever available, we <code>reserve</code> the memory in the destination container before the filling.<br>
+The library is compilable by the modern versions of GCC and Clang.<br>
+The library uses the features of C++14 standard.<br>
+The library consists from the headers only.<br>
+The library has a set of tests.<br>
+No dependencies.</p>
+<p>License <a target="_blank" href="http://www.boost.org/LICENSE_1_0.txt">Boost</a>.</p>
+<p>Author <a href="mailto:kberezovsky@gmail.com">Konstantin Berezovsky</a>.</p>
+</article>
+</body>
+</html>

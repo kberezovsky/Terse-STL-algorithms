@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Краткие STL алгоритмы</title>
+</head>
+<body>
+<header><h2>Краткие STL алгоритмы</h2></header>
+<article>
+<h3>Предыстория</h3>
+<p>4-го сентября 2013 года небезызвестный Шон Пэрент произнёс речь 
+"<a target="_blank" href="http://www.youtube.com/watch?v=qH6sSOr-yk8">Зрелый С++</a>".
+Один из главных тезисов – стандартные алгоритмы выразительнее циклов. 
+Проникнувшись, я поменял привычки. 
+Было:</p>
+<pre>
+    auto f_0(const list&lt;int&gt;& li)
+    {
+        vector&lt;string&gt; vs;
+        for(int i: li)
+            vs.push_back(to_string(i));
+        return vs;
+    }
+</pre>
+<p>Cтало:</p>
+<pre>
+    auto f_1(const list&lt;int&gt;& li)
+    {
+        vector&lt;string&gt; vs;
+        std::transform(li.begin(), li.end(), back_inserter(vs), [](int i){return to_string(i);});
+        return vs;
+    }
+</pre>
+<p>Минус одна строка. 
+Довольно скоро я переключился на вариант из библиотеки <code>boost/range</code>:</p>
+<pre>
+    auto f_2(const list&lt;int&gt;& li)
+    {
+        vector&lt;string&gt; vs;
+        boost::transform(li, back_inserter(vs), [](int i){return to_string(i);});
+        return vs;
+    }
+</pre>
+<p>Минус один аргумент в вызове функции алгоритма.</p>
+<p>Затем я обратил внимание на разрыв между определением контейнера и его фактической инициализацией. 
+Это похоже на древний С:</p>
+<pre>
+    int i;
+    i = atoi("5");
+</pre>
+<p>Современный вариант короче и исключает использование неинициализированной переменной:</p>
+<pre>
+    int i = atoi("5");
+</pre>
+<p>Хочется и для контейнеров совместить создание и заполнение.
+Было бы хорошо иметь возможность написать код вроде следующего:</p>
+<pre>
+    auto f_3(const list&lt;int&gt;& li)
+    {
+        return transform(li, [](int i){return to_string(i);});
+    }
+</pre>
+<p>А ещё лучше всё свести в одну строку:</p>
+<pre>
+    auto f_4(const list&lt;int&gt;& li){ return transform(li, [](int i){return to_string(i);}); }
+</pre>
+<p>"Синтаксический шум" сведён к доступному минимуму.</p>
+<p>Эту одностроковую версию можно без издержек поместить в заголовочный файл. Интерфейс не разъедется.
+Читать код будет легче за счёт устранения разрыва между объявлением и определением.
+Не исключено, что такая функция будет встраиваемой.</p>
+<p>Готового решения, пригодного для написания <code>f_4</code>, я не нашёл, так что сделал библиотеку сам.</p>
+
+<h3>Библиотека</h3>
+<h4>Состав</h4>
+<p>В <code>f_4</code> алгоритму не хватает знания о типе возвращаемого контейнера. 
+В зависимости от обстоятельств, оказываются уместными три способа задания этого типа:</p>
+<ul>
+<li>указание конкретного типа</li>
+<li>указание шаблонного типа</li>
+<li>использование типа по умолчанию</li>
+</ul>
+<p>По числу способов, библиотека состоит из трёх частей. 
+Каждая часть находится в своём пространстве имён:</p>
+<ul>
+<li><code>terse::dst_concrete</code></li>
+<li><code>terse::dst_template</code></li>
+<li><code>terse::dst_default</code></li>
+</ul>
+<p>Каждая часть включает в себя версии генерирующих алгоритмов из стандартных заголовков <code>&lt;algorithm&gt;</code> и <code>&lt;numeric&gt;</code>.
+Генерирующий алгоритм - любой, принимающий <code>std::inserter</code>.</p>
+<p>Генерирующие алгоритмы из <code>&lt;algorithm&gt;</code>:</p>
+<ul>
+<li><code>copy</code></li>
+<li><code>copy_if</code></li>
+<li><code>copy_n</code></li>
+<li><code>fill_n</code></li>
+<li><code>generate_n</code></li>
+<li><code>merge</code></li>
+<li><code>move</code></li>
+<li><code>partition_copy</code></li>
+<li><code>remove_copy</code></li>
+<li><code>remove_copy_if</code></li>
+<li><code>replace_copy</code></li>
+<li><code>replace_copy_if</code></li>
+<li><code>reverse_copy</code></li>
+<li><code>rotate_copy</code></li>
+<li><code>set_difference</code></li>
+<li><code>set_intersection</code></li>
+<li><code>set_symmetric_difference</code></li>
+<li><code>set_union</code></li>
+<li><code>transform</code></li>
+<li><code>unique_copy</code></li>
+</ul>
+<p>Генерирующие алгоритмы из <code>&lt;numeric&gt;</code>:</p>
+<ul>
+<li><code>adjacent_difference</code></li>
+<li><code>partial_sum</code></li>
+</ul>
+
+<h4>Конкретный тип</h4>
+<p>Пример функции с заданием конкретного типа:</p>
+<pre>
+    auto f_5(const list&lt;int&gt;& li){ return dst_concrete::transform&lt;vector&lt;string&gt;&gt;(li, [](int i){return to_string(i);}); }
+</pre>
+<p>Тип возвращаемого контейнера будет точно соответствовать заданному. 
+Если тип элемента возвращаемого контейнера не совпадает с типом, возвращаемым из лямбды, то будут применены доступные преобразования. 
+В следующем примере будет использовано преобразование из <code>double</code> в <code>int</code>:</p>
+<pre>
+    assert(vector&lt;int&gt;{2} == dst_concrete::generate_n&lt;vector&lt;int&gt;&gt;(1, []{return 2.3;}));
+</pre>
+
+<h4>Шаблонный тип</h4>
+<p>Пример функции с заданием шаблонного типа:</p>
+<pre>
+    auto f_6(const list&lt;int&gt;& li){ return dst_template::transform&lt;vector&gt;(li, [](int i){return to_string(i);}); }
+</pre>
+<p>Тут в качестве типа элемента возвращаемого контейнера используется тип, возвращаемый из лямбды.
+Возвращается <code>string</code>, подставляя его в заданный шаблон <code>vector</code>, получаем конкретный тип <code>vector&lt;string&gt;</code>:</p>
+<pre>
+    assert((vector&lt;string&gt;{"1", "2"} == f_6({1, 2})));
+</pre>
+<p>При использовании с шаблонами ассоциативных контейнеров лямбда должна возвращать <code>pair</code>:</p>
+<pre>
+    assert((map&lt;int, double&gt;{{1, 2.3}} == dst_template::generate_n&lt;map&gt;(1, []{return make_pair(1, 2.3);})));
+</pre>
+<p>На данный момент библиотека корректно работает со следующими ассоциативными контейнерами:</p>
+<ul>
+<li><code>std::map</code></li>
+<li><code>std::multimap</code></li>
+<li><code>std::unordered_map</code></li>
+<li><code>std::unordered_multimap</code></li>
+<li><code>boost::container::map</code></li>
+<li><code>boost::container::multimap</code></li>
+<li><code>boost::container::flat_map</code></li>
+<li><code>boost::container::flat_multimap</code></li>
+<li><code>boost::unordered::unordered_map</code></li>
+<li><code>boost::unordered::unordered_multimap</code></li>
+<li><code>google::dense_hash_map</code></li>
+<li><code>google::sparse_hash_map</code></li>
+</ul>
+
+<h4>Тип по умолчанию</h4>
+<p>Пример функции с использованием типа по умолчанию:</p>
+<pre>
+    auto f_7(const list&lt;int&gt;& li){ return dst_default::transform(li, [](int i){return to_string(i);}); }
+</pre>
+<p>Что возвращает эта функция? 
+Бьёрн Страуструп не раз говорил, что в С++ контейнером по умолчанию является <code>vector</code>, так что возвращается <code>vector</code>.
+Исключение сделано для символов. 
+В С++ есть полезный аналог <code>vector</code> для символов - <code>basic_string</code>.
+<abbr title="Small String Optimization">SSO</abbr>, <code>c_str</code>, <code>operator&lt;&lt;</code> и пр. - существенные причины 
+использовать этот аналог и в данной библиотеке.
+Тип контейнера выводится из типа его элемента:</p>
+<pre>
+    assert(string{{}} == dst_default::fill_n(1, char{}));
+    assert(wstring{{}} == dst_default::fill_n(1, wchar_t{}));
+    assert(u16string{{}} == dst_default::fill_n(1, char16_t{}));
+    assert(u32string{{}} == dst_default::fill_n(1, char32_t{}));
+    assert(vector&lt;ANY_OTHER_TYPE&gt; == dst_default::fill_n(1, ANY_OTHER_TYPE{}));
+</pre>
+<p>Т.о., если типом элемента контейнера является <code>char</code>, то типом контейнера будет <code>string</code> и т.д.</p>
+
+<h4>Что на входе</h4>
+<p>В качестве источника данных наши алгоритмы понимают всё с определёнными <code>begin</code> и <code>end</code>, включая списки инициализации:</p>
+<pre>
+    struct A { int* begin(); int* end(); } a;
+    int b[] = {1, 2};
+    auto i2s = [](int i){return to_string(i);};
+    auto vs = transform(a, i2s);
+    vs = transform(b, i2s);
+    vs = transform({1, 2}, i2s);
+</pre>
+<p>В частности, источником может быть любой стандартный контейнер, кроме <code>queue</code>, <code>priority_queue</code> и <code>stack</code>.</p>
+<p>При необходимости вызова алгоритма для неполного диапазона можно использовать <code>boost::make_iterator_range</code>:</p>
+<pre>
+    vector&lt;int&gt; vi = {1, 2};
+    vs = transform(boost::make_iterator_range(vi.begin()+1, vi.end()), i2s);
+</pre>
+
+<h4>Что на выходе</h4>
+<p>Алгоритмы могут писать в объект любого класса, подобного использованному в следующем примере:</p>
+<pre>
+    template&lt;class T&gt;
+    struct A
+    {
+        using value_type = ...
+        using iterator = ...
+        using const_iterator = ...
+        iterator insert(const_iterator, value_type&amp;&amp;);
+        const_iterator end() const;
+    };
+
+    auto a = transform&lt;A&gt;({1, 2}, [](int i){return to_string(i);});
+</pre>
+<p>В частности, все стандартные контейнеры (кроме <code>array</code>) этим условиям удовлетворяют. 
+Впрочем, <code>array</code> тоже можно использовать:</p>
+<pre>
+    auto ai = dst_concrete::transform&lt;array&lt;int, 2&gt;&gt;({"1", "2"}, atoi);
+</pre>
+<p>Проверки переполнения нет.</p>
+
+<h3>Заключение</h3>
+<p>Полезным побочным эффектом использования данных функций является возможность указать при случае на неизменяемость контейнера:</p>
+<pre>
+    const auto a = terse:: ...
+</pre>
+<p>Перед заполнением возвращаемого контейнера библиотека при возможности резервирует в нём память.<br>
+Производительность <code>terse::</code> алгоритмов не хуже <code>std::</code> версий с точностью до <code>std::move</code>.<br>
+Библиотека компилируется современными версиями GCC и Clang.<br>
+Библиотека использует возможности стандарта С++14.<br>
+Библиотека состоит только их заголовков.<br>
+Библиотека покрыта тестами.<br>
+Зависимостей нет.</p>
+<p>Лицензия <a target="_blank" href="http://www.boost.org/LICENSE_1_0.txt">Boost</a>.</p>
+<p>Автор <a href="mailto:kberezovsky@gmail.com">Константин Березовский</a>.</p>
+</article>
+</body>
+</html>
