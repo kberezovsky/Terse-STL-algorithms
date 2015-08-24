@@ -124,8 +124,8 @@ The generating algorithm is any one that accepts <code>std::inserter</code>.</p>
     auto f_5(const list&lt;int&gt;&amp; li){ return dst_concrete::transform&lt;vector&lt;string&gt;&gt;(li, [](int i){return to_string(i);}); }
 </pre>
 <p>The destination container type strictly matches with the specified one.
-If the destination container element type does not match with the lambda return type, then the available conversion will be
-applied.
+If the destination container element type does not match with the lambda return type, then the available conversion will
+be applied.
 In the following example the conversion from <code>double</code> to <code>int</code> has place:</p>
 <pre>
     assert(vector&lt;int&gt;{2} == dst_concrete::generate_n&lt;vector&lt;int&gt;&gt;(1, []{return 2.3;}));
@@ -181,7 +181,8 @@ The type of destination container is deduced from the type of its element:</p>
     assert(u32string{{}} == dst_default::fill_n(1, char32_t{}));
     assert(vector&lt;ANY_OTHER_TYPE&gt; == dst_default::fill_n(1, ANY_OTHER_TYPE{}));
 </pre>
-<p>Thus if the container element type is <code>char</code> then the container type will be <code>string</code> and so on.</p>
+<p>Thus if the container element type is <code>char</code> then the container type will be <code>string</code> and so on.
+</p>
 
 <h4>Source entity</h4>
 <p>Our algorithms accept any source entity with the defined <code>begin</code> and <code>end</code>, including the
@@ -210,9 +211,8 @@ initialization lists:</p>
     {
         using value_type = ...
         using iterator = ...
-        using const_iterator = ...
-        iterator insert(const_iterator, value_type&amp;&amp;);
-        const_iterator end() const;
+        iterator insert(iterator, value_type&amp;&amp;);
+        iterator end() const;
     };
 
     auto a = transform&lt;A&gt;({1, 2}, [](int i){return to_string(i);});

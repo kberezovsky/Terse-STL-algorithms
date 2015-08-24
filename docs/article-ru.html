@@ -182,7 +182,8 @@
     assert(u32string{{}} == dst_default::fill_n(1, char32_t{}));
     assert(vector&lt;ANY_OTHER_TYPE&gt; == dst_default::fill_n(1, ANY_OTHER_TYPE{}));
 </pre>
-<p>Т.о., если типом элемента контейнера является <code>char</code>, то типом контейнера будет <code>string</code> и т.д.</p>
+<p>Т.о., если типом элемента контейнера является <code>char</code>, то типом контейнера будет <code>string</code> и т.д.
+</p>
 
 <h4>Что на входе</h4>
 <p>В качестве источника данных наши алгоритмы понимают всё с определёнными <code>begin</code> и <code>end</code>, включая
@@ -197,7 +198,8 @@
 </pre>
 <p>В частности, источником может быть любой стандартный контейнер, кроме <code>queue</code>, <code>priority_queue</code> и
 <code>stack</code>.</p>
-<p>При необходимости вызова алгоритма для неполного диапазона можно использовать <code>boost::make_iterator_range</code>:</p>
+<p>При необходимости вызова алгоритма для неполного диапазона можно использовать <code>boost::make_iterator_range</code>:
+</p>
 <pre>
     vector&lt;int&gt; vi = {1, 2};
     vs = transform(boost::make_iterator_range(vi.begin()+1, vi.end()), i2s);
@@ -211,9 +213,8 @@
     {
         using value_type = ...
         using iterator = ...
-        using const_iterator = ...
-        iterator insert(const_iterator, value_type&amp;&amp;);
-        const_iterator end() const;
+        iterator insert(iterator, value_type&amp;&amp;);
+        iterator end() const;
     };
 
     auto a = transform&lt;A&gt;({1, 2}, [](int i){return to_string(i);});
@@ -232,8 +233,8 @@
     const auto a = terse:: ...
 </pre>
 <p>Перед заполнением возвращаемого контейнера библиотека при возможности резервирует в нём память.<br>
-Производительность <code>terse::</code> алгоритмов не хуже <code>std::</code> версий с точностью до <code>std::move</code>.
-<br>
+Производительность <code>terse::</code> алгоритмов не хуже <code>std::</code> версий с точностью до
+<code>std::move</code>.<br>
 Библиотека компилируется современными версиями GCC и Clang.<br>
 Библиотека использует возможности стандарта С++14.<br>
 Библиотека состоит только их заголовков.<br>
