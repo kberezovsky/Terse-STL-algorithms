@@ -8,13 +8,13 @@
 <header><h2>Краткие STL алгоритмы</h2></header>
 <article>
 <h3>Предыстория</h3>
-<p>4-го сентября 2013 года небезызвестный Шон Пэрент произнёс речь 
+<p>4-го сентября 2013 года небезызвестный Шон Пэрент произнёс речь
 "<a target="_blank" href="http://www.youtube.com/watch?v=qH6sSOr-yk8">Зрелый С++</a>".
-Один из главных тезисов – стандартные алгоритмы выразительнее циклов. 
-Проникнувшись, я поменял привычки. 
+Один из главных тезисов – стандартные алгоритмы выразительнее циклов.
+Проникнувшись, я поменял привычки.
 Было:</p>
 <pre>
-    auto f_0(const list&lt;int&gt;& li)
+    auto f_0(const list&lt;int&gt;&amp; li)
     {
         vector&lt;string&gt; vs;
         for(int i: li)
@@ -24,17 +24,17 @@
 </pre>
 <p>Cтало:</p>
 <pre>
-    auto f_1(const list&lt;int&gt;& li)
+    auto f_1(const list&lt;int&gt;&amp; li)
     {
         vector&lt;string&gt; vs;
         std::transform(li.begin(), li.end(), back_inserter(vs), [](int i){return to_string(i);});
         return vs;
     }
 </pre>
-<p>Минус одна строка. 
+<p>Минус одна строка.
 Довольно скоро я переключился на вариант из библиотеки <code>boost/range</code>:</p>
 <pre>
-    auto f_2(const list&lt;int&gt;& li)
+    auto f_2(const list&lt;int&gt;&amp; li)
     {
         vector&lt;string&gt; vs;
         boost::transform(li, back_inserter(vs), [](int i){return to_string(i);});
@@ -42,7 +42,7 @@
     }
 </pre>
 <p>Минус один аргумент в вызове функции алгоритма.</p>
-<p>Затем я обратил внимание на разрыв между определением контейнера и его фактической инициализацией. 
+<p>Затем я обратил внимание на разрыв между определением контейнера и его фактической инициализацией.
 Это похоже на древний С:</p>
 <pre>
     int i;
@@ -55,14 +55,14 @@
 <p>Хочется и для контейнеров совместить создание и заполнение.
 Было бы хорошо иметь возможность написать код вроде следующего:</p>
 <pre>
-    auto f_3(const list&lt;int&gt;& li)
+    auto f_3(const list&lt;int&gt;&amp; li)
     {
         return transform(li, [](int i){return to_string(i);});
     }
 </pre>
 <p>А ещё лучше всё свести в одну строку:</p>
 <pre>
-    auto f_4(const list&lt;int&gt;& li){ return transform(li, [](int i){return to_string(i);}); }
+    auto f_4(const list&lt;int&gt;&amp; li){ return transform(li, [](int i){return to_string(i);}); }
 </pre>
 <p>"Синтаксический шум" сведён к доступному минимуму.</p>
 <p>Эту одностроковую версию можно без издержек поместить в заголовочный файл. Интерфейс не разъедется.
@@ -72,14 +72,14 @@
 
 <h3>Библиотека</h3>
 <h4>Состав</h4>
-<p>В <code>f_4</code> алгоритму не хватает знания о типе возвращаемого контейнера. 
+<p>В <code>f_4</code> алгоритму не хватает знания о типе возвращаемого контейнера.
 В зависимости от обстоятельств, оказываются уместными три способа задания этого типа:</p>
 <ul>
 <li>указание конкретного типа</li>
 <li>указание шаблонного типа</li>
 <li>использование типа по умолчанию</li>
 </ul>
-<p>По числу способов, библиотека состоит из трёх частей. 
+<p>По числу способов, библиотека состоит из трёх частей.
 Каждая часть находится в своём пространстве имён:</p>
 <ul>
 <li><code>terse::dst_concrete</code></li>
@@ -120,10 +120,10 @@
 <h4>Конкретный тип</h4>
 <p>Пример функции с заданием конкретного типа:</p>
 <pre>
-    auto f_5(const list&lt;int&gt;& li){ return dst_concrete::transform&lt;vector&lt;string&gt;&gt;(li, [](int i){return to_string(i);}); }
+    auto f_5(const list&lt;int&gt;&amp; li){ return dst_concrete::transform&lt;vector&lt;string&gt;&gt;(li, [](int i){return to_string(i);}); }
 </pre>
-<p>Тип возвращаемого контейнера будет точно соответствовать заданному. 
-Если тип элемента возвращаемого контейнера не совпадает с типом, возвращаемым из лямбды, то будут применены доступные преобразования. 
+<p>Тип возвращаемого контейнера будет точно соответствовать заданному.
+Если тип элемента возвращаемого контейнера не совпадает с типом, возвращаемым из лямбды, то будут применены доступные преобразования.
 В следующем примере будет использовано преобразование из <code>double</code> в <code>int</code>:</p>
 <pre>
     assert(vector&lt;int&gt;{2} == dst_concrete::generate_n&lt;vector&lt;int&gt;&gt;(1, []{return 2.3;}));
@@ -132,7 +132,7 @@
 <h4>Шаблонный тип</h4>
 <p>Пример функции с заданием шаблонного типа:</p>
 <pre>
-    auto f_6(const list&lt;int&gt;& li){ return dst_template::transform&lt;vector&gt;(li, [](int i){return to_string(i);}); }
+    auto f_6(const list&lt;int&gt;&amp; li){ return dst_template::transform&lt;vector&gt;(li, [](int i){return to_string(i);}); }
 </pre>
 <p>Тут в качестве типа элемента возвращаемого контейнера используется тип, возвращаемый из лямбды.
 Возвращается <code>string</code>, подставляя его в заданный шаблон <code>vector</code>, получаем конкретный тип <code>vector&lt;string&gt;</code>:</p>
@@ -162,13 +162,13 @@
 <h4>Тип по умолчанию</h4>
 <p>Пример функции с использованием типа по умолчанию:</p>
 <pre>
-    auto f_7(const list&lt;int&gt;& li){ return dst_default::transform(li, [](int i){return to_string(i);}); }
+    auto f_7(const list&lt;int&gt;&amp; li){ return dst_default::transform(li, [](int i){return to_string(i);}); }
 </pre>
-<p>Что возвращает эта функция? 
+<p>Что возвращает эта функция?
 Бьёрн Страуструп не раз говорил, что в С++ контейнером по умолчанию является <code>vector</code>, так что возвращается <code>vector</code>.
-Исключение сделано для символов. 
+Исключение сделано для символов.
 В С++ есть полезный аналог <code>vector</code> для символов - <code>basic_string</code>.
-<abbr title="Small String Optimization">SSO</abbr>, <code>c_str</code>, <code>operator&lt;&lt;</code> и пр. - существенные причины 
+<abbr title="Small String Optimization">SSO</abbr>, <code>c_str</code>, <code>operator&lt;&lt;</code> и пр. - существенные причины
 использовать этот аналог и в данной библиотеке.
 Тип контейнера выводится из типа его элемента:</p>
 <pre>
@@ -212,7 +212,7 @@
 
     auto a = transform&lt;A&gt;({1, 2}, [](int i){return to_string(i);});
 </pre>
-<p>В частности, все стандартные контейнеры (кроме <code>array</code>) этим условиям удовлетворяют. 
+<p>В частности, все стандартные контейнеры (кроме <code>array</code>) этим условиям удовлетворяют.
 Впрочем, <code>array</code> тоже можно использовать:</p>
 <pre>
     auto ai = dst_concrete::transform&lt;array&lt;int, 2&gt;&gt;({"1", "2"}, atoi);
