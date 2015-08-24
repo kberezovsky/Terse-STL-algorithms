@@ -45,8 +45,8 @@ int main()
 Explanation
 -----------
 
-[Article (English)](docs/article-en.html)<br>
-[Article (Russian)](docs/article-ru.html)
+[Article (English)](http://htmlpreview.github.com/?https://github.com/kberezovsky/Terse-STL-algorithms/blob/master/docs/article-en.html)<br>
+[Article (Russian)](http://htmlpreview.github.com/?https://github.com/kberezovsky/Terse-STL-algorithms/blob/master/docs/article-ru.html)
 
 Installation
 ------------
