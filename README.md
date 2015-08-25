@@ -18,27 +18,18 @@ using namespace terse::dst_default;
 
 int main()
 {
-    vector<const char*> vs{"1", "2"};
-    const char* as[] = {"1", "2"};
-    vector<int> vi;
-    map<int, double> i2d;
+    const vector<const char*> vs{"1", "2"};
 
-    //accepts container:
-    vi = transform<vector<int>>(vs, atoi);
-    //accepts array:
-    vi = transform<vector<int>>(as, atoi);
-    //accepts initializer_list:
-    vi = transform<vector<int>>({"1", "2"}, atoi);
-    //accepts lambda:
-    vi = transform<vector<int>>(vs, [](const char* s){return atoi(s);});
-    //may deduce value_type:
-    vi = transform<vector>(vs, atoi);
-    //may use the default container type (vector or basic_string):
-    vi = transform(vs, atoi);
-    //has all generating STL algorithms:
-    vi = copy({1, 2});
-    //supports associative containers:
-    i2d = generate_n<map>(1, []{return make_pair(1, 2.3);});
+    //algorithm returns the generated container:
+    const vector<int> vi_1 = transform<vector<int>>(vs, atoi);
+    //algorithm may deduce value_type:
+    const vector<int> vi_2 = transform<vector>(vs, atoi);
+    //algorithm may use the default container type (vector or basic_string):
+    const vector<int> vi_3 = transform(vs, atoi);
+    //library has all generating STL algorithms:
+    const vector<int> vi_4 = copy({1, 2});
+    //library supports the associative containers:
+    const map<int, double> mid = generate_n<map>(1, []{return make_pair(1, .5);});
 }
 ```
 
