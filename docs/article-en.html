@@ -8,10 +8,10 @@
 <header><h2>Terse STL algorithms</h2></header>
 <article>
 <h3>Motivation</h3>
-<p>4th September 2013 Sean Parent gave a speech
-"<a target="_blank" href="http://www.youtube.com/watch?v=qH6sSOr-yk8">C++ Seasoning</a>".
-One of the main thesises is "standard algorithms are more expressive than raw loops".
-Impressed with that speech, I changed my habits.
+<p>On the 4th September 2013 Sean Parent gave the
+"<a target="_blank" href="http://www.youtube.com/watch?v=qH6sSOr-yk8">C++ Seasoning</a>" speech.
+One of the main theses is "standard algorithms are more expressive than raw loops".
+Impressed by this speech, I changed my habits.
 Before:</p>
 <pre>
     auto f_0(const list&lt;int&gt;&amp; li)
@@ -60,7 +60,7 @@ The ideal code would be similar to the following version:</p>
         return transform(li, [](int i){return to_string(i);});
     }
 </pre>
-<p>It is even better to write it in the single line:</p>
+<p>It is even better to write it in a single line:</p>
 <pre>
     auto f_4(const list&lt;int&gt;&amp; li){ return transform(li, [](int i){return to_string(i);}); }
 </pre>
@@ -68,7 +68,7 @@ The ideal code would be similar to the following version:</p>
 <p>This one line version may be painlessly moved to the header. The interface will not be scattered.
 It will be easier to read the code because of the eliminated gap between the declaration and definition.
 The function is good for inlining.</p>
-<p>I hadn't found the existing solution for <code>f_4</code>, so I made the library by myself.</p>
+<p>Since I hadn't found the existing solution for <code>f_4</code>, I made the library by myself.</p>
 
 <h3>Library</h3>
 <h4>Content</h4>
@@ -80,14 +80,14 @@ Depending on the circumstances, three ways are appropriate for the type specific
 <li>use the default type</li>
 </ul>
 <p>Based on these ways, the library has three parts.
-Each part lives in the separate namespace:</p>
+Each part lives in a separate namespace:</p>
 <ul>
 <li><code>terse::dst_concrete</code></li>
 <li><code>terse::dst_template</code></li>
 <li><code>terse::dst_default</code></li>
 </ul>
-<p>Each part has the versions of the generating algorithms from the standard headers <code>&lt;algorithm&gt;</code> and
-<code>&lt;numeric&gt;</code>.
+<p>Each part has versions of the generating algorithms from the standard <code>&lt;algorithm&gt;</code> and
+<code>&lt;numeric&gt;</code> headers.
 The generating algorithm is any one that accepts <code>std::inserter</code>.</p>
 <p>The generating algorithms from <code>&lt;algorithm&gt;</code>:</p>
 <ul>
@@ -119,24 +119,23 @@ The generating algorithm is any one that accepts <code>std::inserter</code>.</p>
 </ul>
 
 <h4>The concrete type</h4>
-<p>The example of the function with the specification of the concrete type:</p>
+<p>An example of the function with the specification of the concrete type is as follows:</p>
 <pre>
     auto f_5(const list&lt;int&gt;&amp; li){ return dst_concrete::transform&lt;vector&lt;string&gt;&gt;(li, [](int i){return to_string(i);}); }
 </pre>
-<p>The destination container type strictly matches with the specified one.
-If the destination container element type does not match with the lambda return type, then the available conversion will
-be applied.
+<p>The destination container type strictly matches the specified one.
+If the destination container element type does not match the lambda return type, the available conversion is applied.
 In the following example the conversion from <code>double</code> to <code>int</code> has place:</p>
 <pre>
     assert(vector&lt;int&gt;{2} == dst_concrete::generate_n&lt;vector&lt;int&gt;&gt;(1, []{return 2.3;}));
 </pre>
 
 <h4>The template type</h4>
-<p>The example of the function with the specification of the template type:</p>
+<p>An example of the function with the specification of the template type is as follows:</p>
 <pre>
     auto f_6(const list&lt;int&gt;&amp; li){ return dst_template::transform&lt;vector&gt;(li, [](int i){return to_string(i);}); }
 </pre>
-<p>Here the destination container element type matches with the lambda return type.
+<p>Here the destination container element type matches the lambda return type.
 Lambda returns <code>string</code>, in the combination with the specified template type <code>vector</code>, we get
 <code>vector&lt;string&gt;</code>:</p>
 <pre>
@@ -163,7 +162,7 @@ Lambda returns <code>string</code>, in the combination with the specified templa
 </ul>
 
 <h4>The default type</h4>
-<p>The example of the function using the default type:</p>
+<p>An example of the function using the default type is as follows:</p>
 <pre>
     auto f_7(const list&lt;int&gt;&amp; li){ return dst_default::transform(li, [](int i){return to_string(i);}); }
 </pre>
@@ -231,7 +230,7 @@ However we can use <code>array</code> too:</p>
 </pre>
 <p>The performance of the <code>terse::</code> algorithms is not worse than the <code>std::</code> versions up to
 <code>std::move</code>.<br>
-Whenever available, we <code>reserve</code> the memory in the destination container before the filling.<br>
+Whenever possible, we <code>reserve</code> the memory in the destination container before the filling.<br>
 The library is compilable by the modern versions of GCC and Clang.<br>
 The library uses the features of C++14 standard.<br>
 The library consists of the headers only.<br>
