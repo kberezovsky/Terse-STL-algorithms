@@ -25,25 +25,25 @@ public:
     using size_type = typename Arr::size_type;
     using value_type = typename Arr::value_type;
 
-    InsertableArray(Arr& inArr):arr(inArr){}
+    InsertableArray(Arr& inArr):arr(inArr), ins(arr.begin()) {}
 
     iterator insert(const_iterator, const value_type& v)
     {
-        arr[firstEmptyElementIndex] = v;
-        return &arr[firstEmptyElementIndex++];
+        *ins = v;
+        return ins++;
     }
 
     iterator insert(const_iterator, value_type&& v)
     {
-        arr[firstEmptyElementIndex] = std::forward<value_type>(v);
-        return &arr[firstEmptyElementIndex++];
+        *ins = std::move(v);
+        return ins++;
     }
 
     iterator end(){ return arr.end(); }
 
 private:
     Arr& arr;
-    size_type firstEmptyElementIndex = 0;
+    iterator ins;
 };
 
 template<class DstCont>
