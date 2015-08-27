@@ -49,11 +49,12 @@ private:
 template<class DstCont>
 struct Alg
 {
-    static auto call(std::size_t capacity, std::function<void(std::insert_iterator<DstCont>)> alg)
+    template<typename F>
+    static auto call(std::size_t capacity, F alg)
     {
         DstCont dst;
         Methods::reserve(dst, capacity);
-        alg({ dst, dst.end() });
+        alg(std::insert_iterator<DstCont>{ dst, dst.end() });
         return dst;
     }
 };
@@ -61,11 +62,12 @@ struct Alg
 template<class DstElem, std::size_t DstCapacity>
 struct Alg<std::array<DstElem, DstCapacity>>
 {
-    static auto call(std::size_t, std::function<void(std::insert_iterator<InsertableArray<DstElem, DstCapacity>>)> alg)
+    template<typename F>
+    static auto call(std::size_t, F alg)
     {
         std::array<DstElem, DstCapacity> dst;
         InsertableArray<DstElem, DstCapacity> insertableDst(dst);
-        alg({ insertableDst, insertableDst.end() });
+        alg(std::insert_iterator<InsertableArray<DstElem, DstCapacity>>{ insertableDst, insertableDst.end() });
         return dst;
     }
 };
@@ -73,14 +75,14 @@ struct Alg<std::array<DstElem, DstCapacity>>
 template<class DstCont1, class DstCont2>
 struct Alg2
 {
-    static auto call(std::size_t capacity1, std::size_t capacity2, std::function<void(
-        std::insert_iterator<DstCont1>,
-        std::insert_iterator<DstCont2>)> alg)
+    template<typename F>
+    static auto call(std::size_t capacity1, std::size_t capacity2, F alg)
     {
         std::pair<DstCont1, DstCont2> dst;
         Methods::reserve(dst.first, capacity1);
         Methods::reserve(dst.second, capacity2);
-        alg({ dst.first, dst.first.end() }, { dst.second, dst.second.end() });
+        alg(std::insert_iterator<DstCont1>{ dst.first, dst.first.end() },
+            std::insert_iterator<DstCont2>{ dst.second, dst.second.end() });
         return dst;
     }
 };
@@ -88,14 +90,14 @@ struct Alg2
 template<class DstElem, std::size_t DstCapacity1, std::size_t DstCapacity2>
 struct Alg2<std::array<DstElem, DstCapacity1>, std::array<DstElem, DstCapacity2>>
 {
-    static auto call(std::size_t, std::size_t, std::function<void(
-        std::insert_iterator<InsertableArray<DstElem, DstCapacity1>>,
-        std::insert_iterator<InsertableArray<DstElem, DstCapacity2>>)> alg)
+    template<typename F>
+    static auto call(std::size_t, std::size_t, F alg)
     {
         std::pair<std::array<DstElem, DstCapacity1>, std::array<DstElem, DstCapacity2>> dst;
         InsertableArray<DstElem, DstCapacity1> insertableDst1(dst.first);
         InsertableArray<DstElem, DstCapacity2> insertableDst2(dst.second);
-        alg({ insertableDst1, insertableDst1.end() }, { insertableDst2, insertableDst2.end() });
+        alg(std::insert_iterator<InsertableArray<DstElem, DstCapacity1>>{ insertableDst1, insertableDst1.end() },
+            std::insert_iterator<InsertableArray<DstElem, DstCapacity2>>{ insertableDst2, insertableDst2.end() });
         return dst;
     }
 };
@@ -103,14 +105,14 @@ struct Alg2<std::array<DstElem, DstCapacity1>, std::array<DstElem, DstCapacity2>
 template<class DstCont1, class DstElem, std::size_t DstCapacity2>
 struct Alg2<DstCont1, std::array<DstElem, DstCapacity2>>
 {
-    static auto call(std::size_t capacity1, std::size_t, std::function<void(
-        std::insert_iterator<DstCont1>,
-        std::insert_iterator<InsertableArray<DstElem, DstCapacity2>>)> alg)
+    template<typename F>
+    static auto call(std::size_t capacity1, std::size_t, F alg)
     {
         std::pair<DstCont1, std::array<DstElem, DstCapacity2>> dst;
         Methods::reserve(dst.first, capacity1);
         InsertableArray<DstElem, DstCapacity2> insertableDst2(dst.second);
-        alg({ dst.first, dst.first.end() }, { insertableDst2, insertableDst2.end() });
+        alg(std::insert_iterator<DstCont1>{ dst.first, dst.first.end() },
+            std::insert_iterator<InsertableArray<DstElem, DstCapacity2>>{ insertableDst2, insertableDst2.end() });
         return dst;
     }
 };
@@ -118,14 +120,14 @@ struct Alg2<DstCont1, std::array<DstElem, DstCapacity2>>
 template<class DstElem, std::size_t DstCapacity1, class DstCont2>
 struct Alg2<std::array<DstElem, DstCapacity1>, DstCont2>
 {
-    static auto call(std::size_t, std::size_t capacity2, std::function<void(
-        std::insert_iterator<InsertableArray<DstElem, DstCapacity1>>,
-        std::insert_iterator<DstCont2>)> alg)
+    template<typename F>
+    static auto call(std::size_t, std::size_t capacity2, F alg)
     {
         std::pair<std::array<DstElem, DstCapacity1>, DstCont2> dst;
         InsertableArray<DstElem, DstCapacity1> insertableDst1(dst.first);
         Methods::reserve(dst.second, capacity2);
-        alg({ insertableDst1, insertableDst1.end() }, { dst.second, dst.second.end() });
+        alg(std::insert_iterator<InsertableArray<DstElem, DstCapacity1>>{ insertableDst1, insertableDst1.end() },
+            std::insert_iterator<DstCont2>{ dst.second, dst.second.end() });
         return dst;
     }
 };
