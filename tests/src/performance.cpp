@@ -10,7 +10,7 @@ TEST_CASE("performance", "[hide]")
     using namespace std::chrono;
     using namespace terse::dst_default;
 
-    size_t const count = 100000000;
+    size_t const count = 1000000;
 
     auto const start = high_resolution_clock::now();
 
