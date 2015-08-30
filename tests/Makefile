@@ -5,7 +5,7 @@
 #  http://www.boost.org/LICENSE_1_0.txt)
 
 CC=cc
-CFLAGS=-c -Wfatal-errors -Wall -Wno-missing-braces -std=c++14 -MD -MP -I../terse/detail -Iexternal
+CFLAGS=-c -Wfatal-errors -Wall -Wno-missing-braces -std=c++14 -MD -MP -I.. -I../terse/detail -Iexternal
 LDFLAGS=-lstdc++
 OBJDIR=obj
 vpath %.cpp src
