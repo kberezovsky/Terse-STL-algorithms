@@ -22,6 +22,7 @@ SOURCES=\
 	numeric_dst_default.cpp\
 	numeric_dst_template.cpp\
 	src_elem.cpp\
+	performance.cpp\
 	tests.cpp
 OBJECTS=$(patsubst %.cpp,$(OBJDIR)/%.o,$(SOURCES))
 EXECUTABLE=tests
